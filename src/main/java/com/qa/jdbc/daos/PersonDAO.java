@@ -3,8 +3,11 @@ package com.qa.jdbc.daos;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,19 +45,69 @@ public class PersonDAO {
 		
 	}
 	
-	public void readAll() {
+	public List<Person> readAll() {
+		try (Connection conn = DriverManager.getConnection(connectionUrl, username, password);
+				Statement statement = conn.createStatement()) {
+			ResultSet resultSet = statement.executeQuery("SELECT * FROM person");
+			
+			List<Person> people = new ArrayList<Person>();
+			while (resultSet.next()) {
+				people.add(personFromResultSet(resultSet));
+			}
+			return people;
+		} catch (SQLException e) {
+			LOGGER.error(e.getMessage());
+		}
 		
+		return null;
 	}
 	
-	public void readById() {
+	public Person readById(int id) {
+		try (Connection conn = DriverManager.getConnection(connectionUrl, username, password);
+				Statement statement = conn.createStatement()) {
+			ResultSet resultSet = statement.executeQuery("SELECT * FROM person WHERE id= " + id);
+			resultSet.next();
+			return personFromResultSet(resultSet);
+		} catch (SQLException e) {
+			LOGGER.error(e.getMessage());
+		}
 		
+		return null;
 	}
 	
-	public void update() {
-		
+	public void update(Person person) {
+		try (Connection conn = DriverManager.getConnection(connectionUrl, username, password);
+				PreparedStatement pStatement = conn.
+						prepareStatement("UPDATE person SET firstName = ?, lastName = ?, age = ? WHERE id = ?")) {
+			pStatement.setString(1, person.getFirstName());
+			pStatement.setString(2, person.getLastName());
+			pStatement.setInt(3, person.getAge());
+			pStatement.setInt(4, person.getId());
+			pStatement.executeUpdate();
+			
+			System.out.println("Person Updated");
+		} catch (SQLException e) {
+			LOGGER.error(e.getMessage());
+		}
 	}
 	
-	public void delete() {
+	public void delete(int id) {
+		try(Connection conn = DriverManager.getConnection(connectionUrl, username, password);
+				PreparedStatement pStatement = conn.prepareStatement("DELETE FROM person WHERE id = ?;")) {
+			pStatement.setInt(1, id);
+			pStatement.executeUpdate();
+			System.out.println("Person Deleted");
+		} catch (SQLException e) {
+			LOGGER.error(e.getMessage());
+		}
+	}
+	
+	public Person personFromResultSet(ResultSet resultSet) throws SQLException {
+		int id = resultSet.getInt("id");
+		String firstName = resultSet.getString("firstName");
+		String lastName = resultSet.getString("lastName");
+		int age = resultSet.getInt("age");
 		
+		return new Person(id, firstName, lastName, age);
 	}
 }
