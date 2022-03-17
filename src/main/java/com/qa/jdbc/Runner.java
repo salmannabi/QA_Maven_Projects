@@ -1,7 +1,9 @@
 package com.qa.jdbc;
 
 import java.util.List;
+import java.util.Scanner;
 
+import com.qa.jdbc.controllers.PersonController;
 import com.qa.jdbc.daos.PersonDAO;
 import com.qa.jdbc.domain.Person;
 
@@ -17,6 +19,8 @@ public class Runner {
 		
 		// Creating DAO object
 		PersonDAO personDao = new PersonDAO();
+		PersonController pc = new PersonController(personDao);
+		Scanner scanner = new Scanner(System.in);
 		
 		// Create methods
 //		personDao.create(personOne);
@@ -28,11 +32,11 @@ public class Runner {
 //		System.out.println();
 		
 		// ReadAll method
-		System.out.println("Printing list of people read by readAll() method");
-		List<Person> people = personDao.readAll();
-		for (Person person : people) {
-			System.out.println(person);
-		}
+//		System.out.println("Printing list of people read by readAll() method");
+//		List<Person> people = personDao.readAll();
+//		for (Person person : people) {
+//			System.out.println(person);
+//		}
 //		
 		// Update method
 //		Person updatePerson = new Person(2, "Philip", "James", 28);
@@ -40,6 +44,15 @@ public class Runner {
 		
 		// Delete method
 //		personDao.delete(1);
-	}
 
+		// Using Person Controller
+		pc.create(scanner);
+		pc.readAll();
+		pc.readById(scanner);
+		pc.update(scanner);
+		pc.delete(scanner);
+		
+		// Close scanner
+		scanner.close();
+	}
 }

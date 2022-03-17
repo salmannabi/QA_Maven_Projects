@@ -26,7 +26,6 @@ public class PersonDAO {
 				Statement statement = conn.createStatement()) {
 			statement.executeUpdate("INSERT INTO person (firstName, lastName, age) VALUES ('" + 
 				person.getFirstName() + "', '" + person.getLastName() + "', '" + person.getAge() + "');");
-			System.out.println("Person Created via 'create' method");
 		} catch (SQLException e) {
 			LOGGER.error(e.getMessage());
 		}
@@ -84,8 +83,6 @@ public class PersonDAO {
 			pStatement.setInt(3, person.getAge());
 			pStatement.setInt(4, person.getId());
 			pStatement.executeUpdate();
-			
-			System.out.println("Person Updated");
 		} catch (SQLException e) {
 			LOGGER.error(e.getMessage());
 		}
@@ -96,7 +93,6 @@ public class PersonDAO {
 				PreparedStatement pStatement = conn.prepareStatement("DELETE FROM person WHERE id = ?;")) {
 			pStatement.setInt(1, id);
 			pStatement.executeUpdate();
-			System.out.println("Person Deleted");
 		} catch (SQLException e) {
 			LOGGER.error(e.getMessage());
 		}
