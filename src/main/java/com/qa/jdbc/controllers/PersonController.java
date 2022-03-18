@@ -24,7 +24,7 @@ public class PersonController {
 		scanner.nextLine();
 		
 		personDao.create(new Person(firstName, lastName, age));
-		System.out.println("Person Created via 'create' method");
+		System.out.println("Person Created via 'create' method\n");
 	}
 	
 	public void readAll() {
@@ -60,7 +60,7 @@ public class PersonController {
 		scanner.nextLine();
 		
 		personDao.update(new Person(id, firstName, lastName, age));
-		System.out.println("Person Updated");
+		System.out.println("Person Updated\n");
 	}
 	
 	public void delete(Scanner scanner) {
@@ -69,7 +69,11 @@ public class PersonController {
 		// Clear scanner
 		scanner.nextLine();
 		
-		personDao.delete(id);
-		System.out.println("Person Deleted");
+		int status = personDao.delete(id);
+		if (status == 1) {
+			System.out.println("Person with id: " + id + " Deleted!");
+		} else {
+			System.out.println("Delete Unsuccessful!");
+		}
 	}
 }

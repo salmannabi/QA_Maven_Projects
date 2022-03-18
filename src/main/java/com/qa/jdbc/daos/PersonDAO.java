@@ -88,14 +88,16 @@ public class PersonDAO {
 		}
 	}
 	
-	public void delete(int id) {
+	public int delete(int id) {
 		try(Connection conn = DriverManager.getConnection(connectionUrl, username, password);
 				PreparedStatement pStatement = conn.prepareStatement("DELETE FROM person WHERE id = ?;")) {
 			pStatement.setInt(1, id);
-			pStatement.executeUpdate();
+			int status = pStatement.executeUpdate();
+			return status;
 		} catch (SQLException e) {
 			LOGGER.error(e.getMessage());
 		}
+		return 0;
 	}
 	
 	public Person personFromResultSet(ResultSet resultSet) throws SQLException {
